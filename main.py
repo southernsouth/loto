@@ -1,299 +1,189 @@
-import random
+import numbers
+from random import randint
 
 
+class Loto():
+    def __init__(self):
+        self.numbers = []
+        for i in range(90):
+            self.numbers.append(i + 1)
 
-def ex_random():
-    ex = random.randint(0, 9)
+        self.sort_numbers = []
+        index_1 = 0
+        index_2 = 9
+        for i in range(9):
+            self.sort_numbers.append(self.numbers[index_1:index_2])
+            index_1 = index_2
+            index_2 += 10
+        self.sort_numbers[8].append(90)
 
-    return ex
-
-def random_int(x):
-    global ex_lost, r_lost
-
-    while True:
-        ex = ex_random()
-
-        if ex in ex_lost:
-            ex = ex_random()
-        else:
-            ex_lost.append(ex)
-
-            if ex == 0:
-                while True:
-                    r = random.randint(1, 9)
-
-                    if r in r_lost:
-                        r = random.randint(1, 9)
-                    else:
-                        r_lost.append(r)
-                        r = ' ' + str(r)
-
-                        break
-            elif ex == 1:
-                while True:
-                    r = random.randint(10, 19)
-
-                    if r in r_lost:
-                        r = random.randint(10, 19)
-                    else:
-                        r_lost.append(r)
-                        r = str(r)
-
-                        break
-            elif ex == 2:
-                while True:
-                    r = random.randint(20, 29)
-
-                    if r in r_lost:
-                        r = random.randint(20, 29)
-                    else:
-                        r_lost.append(r)
-                        r = str(r)
-
-                        break
-            elif ex == 3:
-                while True:
-                    r = random.randint(30, 39)
-
-                    if r in r_lost:
-                        r = random.randint(30, 39)
-                    else:
-                        r_lost.append(r)
-                        r = str(r)
-
-                        break
-            elif ex == 4:
-                while True:
-                    r = random.randint(40, 49)
-
-                    if r in r_lost:
-                        r = random.randint(40, 49)
-                    else:
-                        r_lost.append(r)
-                        r = str(r)
-
-                        break
-            elif ex == 5:
-                while True:
-                    r = random.randint(50, 59)
-
-                    if r in r_lost:
-                        r = random.randint(50, 59)
-                    else:
-                        r_lost.append(r)
-                        r = str(r)
-
-                        break
-            elif ex == 6:
-                while True:
-                    r = random.randint(60, 69)
-
-                    if r in r_lost:
-                        r = random.randint(60, 69)
-                    else:
-                        r_lost.append(r)
-                        r = str(r)
-
-                        break
-            elif ex == 7:
-                while True:
-                    r = random.randint(70, 79)
-
-                    if r in r_lost:
-                        r = random.randint(70, 79)
-                    else:
-                        r_lost.append(r)
-                        r = str(r)
-
-                        break
-            elif ex == 8:
-                while True:
-                    r = random.randint(80, 89)
-
-                    if r in r_lost:
-                        r = random.randint(80, 89)
-                    else:
-                        r_lost.append(r)
-                        r = str(r)
-
-                        break
-            elif ex == 9:
-                while True:
-                    r = random.randint(90, 99)
-
-                    if r in r_lost:
-                        r = random.randint(90, 99)
-                    else:
-                        r_lost.append(r)
-                        r = str(r)
-
-                        break
-
-            ex = ex * 2
-
-            x = x.replace('.' + str(int(ex / 2)), r)
-            
-            break
+        Loto.player_card(self)
+        Loto.pc_card(self)
+        Loto.game(self)
     
-    return x
+    def player_card(self):
+        self.player_numbers_list = []  
+        for i in range(9):
+            numbers_for_indexs = []
+            for x in range(len(self.sort_numbers[i])):
+                numbers_for_indexs.append(x)
+            indexs = []
+            for x in range(3):
+                index = randint(0, len(numbers_for_indexs) - 1)
+                indexs.append(numbers_for_indexs[index])
+                del numbers_for_indexs[index]
+            self.player_numbers_list.append([self.sort_numbers[i][indexs[0]], self.sort_numbers[i][indexs[1]], self.sort_numbers[i][indexs[2]]])
 
-def start():
-    global ex_lost, r_lost, x, y
-    
-    x = '------------You--------------'
-    
-    x1 = '.0|.1|.2|.3|.4|.5|.6|.7|.8|.9'
-    x2 = '.0|.1|.2|.3|.4|.5|.6|.7|.8|.9'
-    x3 = '.0|.1|.2|.3|.4|.5|.6|.7|.8|.9'
+        indexs = [[], [], []]
+        for i in range(3):
+            numbers_for_indexs = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+            for x in range(5):
+                random_index = randint(0, len(numbers_for_indexs) - 1)
+                indexs[i].append(numbers_for_indexs[random_index])
+                del numbers_for_indexs[random_index]
+            indexs[i].sort()
 
-    x4 = '-----------------------------'
+        self.player_numbers_in_game = [[[], [], [], [], [], [], [], [], []], [[], [], [], [], [], [], [], [], []], [[], [], [], [], [], [], [], [], []]]
+        for i in range(3):
+            for x in range(5):
+                list_index = indexs[i][x]
+                self.player_numbers_in_game[i][list_index].append(self.player_numbers_list[list_index][i])
+        
+        self.player_card_row1 =  '\n|.1|.2|.3|.4|.5|.6|.7|.8|.9|\n'
+        for i in range(9):
+            list = self.player_numbers_in_game[0]
+            if len(list[i]) == 0:
+                list[i] = ['  ']
+            if len(str(list[0][0])) == 1:
+                list[i][0] = ' ' + str(list[i][0])
+            self.player_card_row1 = self.player_card_row1.replace('.%s' % (i + 1), str(list[i][0]))
+        self.player_card_row2 =  '|.1|.2|.3|.4|.5|.6|.7|.8|.9|\n'
+        for i in range(9):
+            list = self.player_numbers_in_game[1]
+            if len(list[i]) == 0:
+                list[i] = ['  ']
+            if len(str(list[0][0])) == 1:
+                list[i][0] = ' ' + str(list[i][0])
+            self.player_card_row2 = self.player_card_row2.replace('.%s' % (i + 1), str(list[i][0]))
+        self.player_card_row3 =  '|.1|.2|.3|.4|.5|.6|.7|.8|.9|\n'
+        for i in range(9):
+            list = self.player_numbers_in_game[2]
+            if len(list[i]) == 0:
+                list[i] = ['  ']
+            if len(str(list[0][0])) == 1:
+                list[i][0] = ' ' + str(list[i][0])
+            self.player_card_row3 = self.player_card_row3.replace('.%s' % (i + 1), str(list[i][0]))
 
-    ex_lost = []
-    r_lost = []
-    
-    for i in range(5):
-        x1 = random_int(x1)
+        self.player_card_text =  '           [You]            \n'
+        self.player_card_text += '+--+--+--+--+--+--+--+--+--+'    
+        self.player_card_text += self.player_card_row1     
+        self.player_card_text += self.player_card_row2    
+        self.player_card_text += self.player_card_row3
+        self.player_card_text += '+--+--+--+--+--+--+--+--+--+'
 
-    for i in range(10):
-        x1 = x1.replace('.' + str(i), '  ')
-    
-    x += '\n' + x1
+    def pc_card(self):
+        self.pc_numbers_list = []  
+        for i in range(9):
+            numbers_for_indexs = []
+            for x in range(len(self.sort_numbers[i])):
+                numbers_for_indexs.append(x)
+            indexs = []
+            for x in range(3):
+                index = randint(0, len(numbers_for_indexs) - 1)
+                indexs.append(numbers_for_indexs[index])
+                del numbers_for_indexs[index]
+            self.pc_numbers_list.append([self.sort_numbers[i][indexs[0]], self.sort_numbers[i][indexs[1]], self.sort_numbers[i][indexs[2]]])
 
-    ex_lost = []
+        indexs = [[], [], []]
+        for i in range(3):
+            numbers_for_indexs = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+            for x in range(5):
+                random_index = randint(0, len(numbers_for_indexs) - 1)
+                indexs[i].append(numbers_for_indexs[random_index])
+                del numbers_for_indexs[random_index]
+            indexs[i].sort()
 
-    for i in range(5):
-        x2 = random_int(x2)
+        self.pc_numbers_in_game = [[[], [], [], [], [], [], [], [], []], [[], [], [], [], [], [], [], [], []], [[], [], [], [], [], [], [], [], []]]
+        for i in range(3):
+            for x in range(5):
+                list_index = indexs[i][x]
+                self.pc_numbers_in_game[i][list_index].append(self.pc_numbers_list[list_index][i])
+        
+        self.pc_card_row1 =  '\n|.1|.2|.3|.4|.5|.6|.7|.8|.9|\n'
+        for i in range(9):
+            list = self.pc_numbers_in_game[0]
+            if len(list[i]) == 0:
+                list[i] = ['  ']
+            if len(str(list[0][0])) == 1:
+                list[i][0] = ' ' + str(list[i][0])
+            self.pc_card_row1 = self.pc_card_row1.replace('.%s' % (i + 1), str(list[i][0]))
+        self.pc_card_row2 =  '|.1|.2|.3|.4|.5|.6|.7|.8|.9|\n'
+        for i in range(9):
+            list = self.pc_numbers_in_game[1]
+            if len(list[i]) == 0:
+                list[i] = ['  ']
+            if len(str(list[0][0])) == 1:
+                list[i][0] = ' ' + str(list[i][0])
+            self.pc_card_row2 = self.pc_card_row2.replace('.%s' % (i + 1), str(list[i][0]))
+        self.pc_card_row3 =  '|.1|.2|.3|.4|.5|.6|.7|.8|.9|\n'
+        for i in range(9):
+            list = self.pc_numbers_in_game[2]
+            if len(list[i]) == 0:
+                list[i] = ['  ']
+            if len(str(list[0][0])) == 1:
+                list[i][0] = ' ' + str(list[i][0])
+            self.pc_card_row3 = self.pc_card_row3.replace('.%s' % (i + 1), str(list[i][0]))
 
-    for i in range(10):
-        x2 = x2.replace('.' + str(i), '  ')
+        self.pc_card_text =  '            [PC]            \n'
+        self.pc_card_text += '+--+--+--+--+--+--+--+--+--+'    
+        self.pc_card_text += self.pc_card_row1     
+        self.pc_card_text += self.pc_card_row2    
+        self.pc_card_text += self.pc_card_row3
+        self.pc_card_text += '+--+--+--+--+--+--+--+--+--+'
 
-    x += '\n' + x2
-
-    ex_lost = []
-
-    for i in range(5):
-        x3 = random_int(x3)
-
-    for i in range(10):
-        x3 = x3.replace('.' + str(i), '  ')
-
-    x += '\n' + x3
-    x += '\n' + x4
-
-    print(x)
-
-
-    y = '----------Computer-----------'
-
-    y1 = '.0|.1|.2|.3|.4|.5|.6|.7|.8|.9'
-    y2 = '.0|.1|.2|.3|.4|.5|.6|.7|.8|.9'
-    y3 = '.0|.1|.2|.3|.4|.5|.6|.7|.8|.9'
-
-    y4 = '-----------------------------'
-
-    ex_lost = []
-    r_lost = []
-    
-    for i in range(5):
-        y1 = random_int(y1)
-
-    for i in range(10):
-        y1 = y1.replace('.' + str(i), '  ')
-    
-    y += '\n' + y1
-
-    ex_lost = []
-
-    for i in range(5):
-        y2 = random_int(y2)
-
-    for i in range(10):
-        y2 = y2.replace('.' + str(i), '  ')
-
-    y += '\n' + y2
-
-    ex_lost = []
-
-    for i in range(5):
-        y3 = random_int(y3)
-
-    for i in range(10):
-        y3 = y3.replace('.' + str(i), '  ')
-
-    y += '\n' + y3
-    y += '\n' + y4
-
-    print(y)
-
-def game():
-    global x, y
-
-    b = []
-
-    for i in range(99):
-        if i < 9:
-            b.append(' ' + str(i + 1))
-        else:
-            b.append(str(i + 1))
-
-    while True:
-        r = random.randint(0, len(b))
-
-        print('\nNumber ' + b[r])
-
-        ip = input('\nLock up or continue? (l/c)\n')
-
+    def game(self):
+        check = True
         while True:
-            if ip == 'l' or ip == 'c':
+            random_index = randint(0, len(self.numbers) - 1)
+            number = str(self.numbers[random_index])
+            del self.numbers[random_index]
+            if len(number) == 1:
+                number = ' ' + number
+
+            print(self.player_card_text)
+            print(self.pc_card_text)
+            if self.player_card_text.count(' ') == 77:
+                print('You win!')
                 break
-            else:
-                ip = input('\nInvalid input.\nLock up or continue? (l/c)\n')
-
-        if ip == 'l':
-            if b[r] not in x:
-                print('\nThis number is not on the card. You lost.')
+            if self.pc_card_text.count(' ') == 78:
+                print('You lose')
                 break
-            else:
-                x = x.replace(b[r], '  ')
-                print('\n' + x)
+            print('\n+------+--+\n|Number|%s|\n+------+--+' % (number))
+            
+            while True:
+                answer = input('Select or skip? (Y/n): ').upper()
 
-                if b[r] in y:
-                    y = y.replace(b[r], '  ')
-                print(y)
+                if answer == 'Y':
+                    if number in self.player_card_text:
+                        self.player_card_text = self.player_card_text.replace(number, '  ')
+                        if number in self.pc_card_text:
+                            self.pc_card_text = self.pc_card_text.replace(number, '  ')
+                        break
+                    else:
+                        print('You lose. The number is not on the card.')
+                        check = False
+                        break
+                elif answer == 'N':
+                    if number in self.player_card_text:
+                        print('You lose. The number was on the card.')
+                        check = False
+                        break
+                    else:
+                        if number in self.pc_card_text:
+                            self.pc_card_text = self.pc_card_text.replace(number, '  ')
+                        break
 
-                del b[r]
-
-                if x.count('  ') == 10 * 3 and y.count('  ') == 10 * 3:
-                    print('\nDraw.')
-                    break
-                elif x.count('  ') == 10 * 3:
-                    print('\nYou win!')
-                    break
-                elif y.count('  ') == 10 * 3:
-                    print('\nComputer win!')
-                    break
-        else:
-            if b[r] in x:
-                print('\nThis number was on the card. You lost.')
+            if check == False:
                 break
-            else:
-                print('\n' + x)
 
-                if b[r] in y:
-                    y = y.replace(b[r], '  ')
-                print(y)
-
-                del b[r]
-
-                if x.count('  ') == 10 * 3 and y.count('  ') == 10 * 3:
-                    print('Draw.')
-                    break
-                elif x.count('  ') == 10 * 3:
-                    print('You win!')
-                    break
-                elif y.count('  ') == 10 * 3:
-                    print('Computer win!')
-                    break
-
-start()
-game()
+Loto()
